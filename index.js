@@ -1,7 +1,9 @@
 const {app, BrowserWindow} = require('electron')
 const https = require ('https')
 const cheerio = require ('cheerio')
+const fs = require('fs')
 
+//Returns server response from JKHub.org given a path
 function getResponse(path) {
   const response = {};
   const options = {
@@ -35,12 +37,14 @@ function getResponse(path) {
   });
 }
 
+//Scrapes response and returns a javascript object
+//containing metadata about the file categories hosted on JKHUB.org (only sends 1 get request)
 function scrapeCategories() {
   return new Promise( (resolve) => { //lol wtf am I doing
     getResponse('/files').then( (res) => {
       console.log('Connected with status code ' + res.status);
       const $ = cheerio.load(res.data); //load response into cheerio
-      //find all dom elements with attribute title="View Category"
+      //find all dom elements with attribute title="View Category" (should be everything we need)
       var metadata = new Array();
       $('a[title="View Category"]').each(function(i, elem) {
       //process each category
@@ -65,21 +69,23 @@ function scrapeCategories() {
       //console.log(metadata);
       resolve(metadata);
     }).catch( (reason) => {
-      console.log("Something went wrong")
+      console.log("Looks like we couldn't scrape the categories")
       console.log(reason);
     })
   })
 };
 
-scrapeCategories().then( (poop) => {
-  console.log(poop)
-});
-
 function createWindow () {
     // Create the browser window.
-  //win = new BrowserWindow({width: 800, height: 600})
+    //win = new BrowserWindow({width: 800, height: 600})
     // and load the index.html of the app.
     //win.loadFile('index.html')
 }
+scrapeCategories().then( (data) => {
+  var text = JSON.stringify(data, null, 4)
+  fs.writeFile("data.json", text)
+  win = new BrowserWindow({width: 800, height: 600})
+  win.loadFile('data.json')
+});
 
-app.on('ready', createWindow)
+//app.on('ready', createWindow)
