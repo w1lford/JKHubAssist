@@ -2,7 +2,7 @@ const {app, BrowserWindow} = require('electron')
 const https = require ('https')
 const cheerio = require ('cheerio')
 
-var jsonData = [];
+var metadata = new Array();
 function getResponse(path) {
   const response = {};
   const options = {
@@ -58,26 +58,28 @@ promise.then( (res) => {
     //process each category
     var title = $(this).text();
     var subcat = $(this).parent().children("ul").children("li").children('a');
-    //console.log(title);
-    jsonData["category"] = title;
-    subcat.each(function(i, elem) {
+    console.log("Category found: " + title);
+    var data = { //create new object to hold metadata
+      category: title,
+      subcategory: new Array()
+    };
+    metadata.push(data);
+    subcat.each(function(j, elem) {
       //process each subcategory
       var subcatTitle = $(this).text();
       var subcatURL = $(this).attr("href");
       var subcatPath = subcatURL.substring(17); //shave 'https://jkhub.org' off the URL...too hacky??
-
-      jsonData["category"]["subcategory"] = subcatTitle
-      var string = "{'category':" + title }
-      //console.log("\t" + subcatPath);
+      console.log("\t" + subcatPath);
+      //copy the data to the object
+      metadata[i]["subcategory"].push({name: subcatTitle, url: subcatURL, path: subcatPath});
       /*
       var promise = getResponse(subcatPath);
       promise.then( (res) => {
-
       })
       */
     });
   });
-  console.log(jsonData);
+  console.log(metadata);
 }).catch( (reason) => {
   console.log("Could not get response.")
   console.log("Reason: " + reason);
