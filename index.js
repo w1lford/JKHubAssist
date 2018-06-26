@@ -40,9 +40,10 @@ function getResponse(path) {
 //Scrapes response and returns a javascript object
 //containing metadata about the file categories hosted on JKHUB.org (only sends 1 get request)
 function scrapeCategories() {
-  return new Promise( (resolve) => { //lol wtf am I doing
+  return new Promise( (resolve, reject) => { //lol wtf am I doing
     getResponse('/files').then( (res) => {
       console.log('Connected with status code ' + res.status);
+      console.log('Fetching categories...')
       const $ = cheerio.load(res.data); //load response into cheerio
       //find all dom elements with attribute title="View Category" (should be everything we need)
       var metadata = new Array();
@@ -69,8 +70,9 @@ function scrapeCategories() {
       //console.log(metadata);
       resolve(metadata);
     }).catch( (reason) => {
-      console.log("Looks like we couldn't scrape the categories")
+      //console.log("Looks like we couldn't scrape the categories")
       console.log(reason);
+      reject(reason)
     })
   })
 };
@@ -81,11 +83,45 @@ function createWindow () {
     // and load the index.html of the app.
     //win.loadFile('index.html')
 }
+/*
 scrapeCategories().then( (data) => {
+  var metadata = data;
+  //iterate through the object, and...
+  for( i = 0; i < metadata.length; i++) {
+    var subcategory = metadata[i]["subcategory"];
+    for( j = 0; j < subcategory.length; j++ ) {
+      console.log(subcategory[j].path);
+    }
+  }
+});
+*/
+  getResponse('https://jkhub.org/files/category/4-skins/').then( (res) => {
+    console.log(res.status)
+    const $ = cheerio.load(res.data);
+    var nextbutton = $('a[rel="next"]') //but wait! there's more...
+    if(nextbutton.html() !== null) {
+      console.log(nextbutton.attr('href'));
+    }
+
+    var files = {}
+    //find all div elements with the class "basic_info" (should give us everything we need)
+     $('div[class="basic_info"]').each(function(i, elem) {
+       var title = $(this).children('h3').children('a').text(); //mod title
+       var author = $(this).children('div[class="desc lighter"]').children('a').children('span').text(); //mod author
+       var desc = $(this).children('span[class="desc"]').text(); //description
+       var url = $(this).parent().children('a').attr('href'); // url
+       var thumb = $(this).parent().children('a').children('img').attr('src'); //image thumbnail url
+       //var title = $(this).html();
+       //var author = $(this).parent()
+     })
+
+
+  /*
   var text = JSON.stringify(data, null, 4)
   fs.writeFile("data.json", text)
   win = new BrowserWindow({width: 800, height: 600})
   win.loadFile('data.json')
+  */
 });
 
 //app.on('ready', createWindow)
