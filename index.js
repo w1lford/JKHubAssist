@@ -3,6 +3,7 @@ const https = require ('https')
 const cheerio = require ('cheerio')
 const fs = require('fs')
 
+var files = new Array();
 //Returns server response from JKHub.org given a path
 function getResponse(path) {
   const response = {};
@@ -51,7 +52,7 @@ function scrapeCategories() {
       //process each category
       var title = $(this).text();
       var subcat = $(this).parent().children("ul").children("li").children('a');
-      console.log("Category found: " + title);
+      //console.log("Category found: " + title);
       var data = { //create new object to hold metadata
         category: title,
         subcategory: new Array()
@@ -62,20 +63,41 @@ function scrapeCategories() {
         var subcatTitle = $(this).text();
         var subcatURL = $(this).attr("href");
         var subcatPath = subcatURL.substring(17); //shave 'https://jkhub.org' off the URL...too hacky??
-        console.log("\t" + subcatPath);
+        //console.log("\t" + subcatPath);
         //copy the data to the object
         metadata[i]["subcategory"].push({name: subcatTitle, url: subcatURL, path: subcatPath});
         });
       });
-      //console.log(metadata);
       resolve(metadata);
     }).catch( (reason) => {
-      //console.log("Looks like we couldn't scrape the categories")
       console.log(reason);
-    //  reject(reason)
     })
   })
 };
+
+function scrapeModdata(url) {
+  return new Promise( (resolve, reject) => {
+      getResponse(url).then ( (res => {
+        const $ = cheerio.load(res.data);
+
+        $('div[class="basic_info"]').each(function(i, elem) {
+          var title = $(this).children('h3').children('a[title]').text(); //mod title
+          var author = $(this).children('div[class="desc lighter"]').children('a').children('span').text(); //mod author
+          var desc = $(this).children('span[class="desc"]').text(); //description
+          var url = $(this).parent().children('a').attr('href'); // url
+          var thumb = $(this).parent().children('a').children('img').attr('src'); //image thumbnail url
+          files.push({name: title, author: author, description: desc, url: url, thumb: thumb});
+        })
+
+        const nextbutton = $('a[rel="next"]');
+        const url = nextbutton.attr('href')
+        if(nextbutton.html() !== null) {
+          console.log('Following link ' + url);
+          scrapeModdata(url).then ( dat => {resolve(dat)}); //recursively visit each file page via the 'next' button
+        } else { resolve(files); } //not sure why I need this buuuuut
+      }))
+    })
+}
 
 function createWindow () {
     // Create the browser window.
@@ -96,34 +118,19 @@ scrapeCategories().then( (data) => {
 });
 */
 
-var uri = 'https://jkhub.org/files/category/65-official-releases/'
-var uri2 = 'https://jkhub.org/files/category/67-skins/'
-var files = new Array();
+var uri = 'https://jkhub.org/files/category/78-halloween-2017/'
 
-function scrapeModdata(url) {
-  return new Promise( (resolve, reject) => {
-      getResponse(url).then ( (res => {
-        const $ = cheerio.load(res.data);
-        $('div[class="basic_info"]').each(function(i, elem) {
-          var title = $(this).children('h3').children('a').text(); //mod title
-          var author = $(this).children('div[class="desc lighter"]').children('a').children('span').text(); //mod author
-          var desc = $(this).children('span[class="desc"]').text(); //description
-          var url = $(this).parent().children('a').attr('href'); // url
-          var thumb = $(this).parent().children('a').children('img').attr('src'); //image thumbnail url
-          files.push({name: title, author: author, description: desc, url: url, thumb: thumb});
-        })
+scrapeCategories().then( (data) => {
+  var metadata = data;
+  scrapeModdata(uri).then( (dat) => {
+    metadata[0]["subcategory"][1]["files"] = dat;
+    //console.log(metadata[0]["subcategory"][0]);
+    var text = JSON.stringify(metadata, null, 4);
+    fs.writeFile("data.json", text)
+    console.log("Done.");
+  })
 
-        const nextbutton = $('a[rel="next"]');
-        const url = nextbutton.attr('href')
-        if(nextbutton.html() !== null) {
-          console.log('Following link ' + url);
-          scrapeModdata(url).then ( dat => {resolve(dat)}); //recursively visit each file page via the 'next' button
-        } else { resolve(files); }
-      }))
-    })
-}
+})
 
-scrapeModdata(uri2).then( (dat) => {
-  console.log(dat);
-});
+
 //app.on('ready', createWindow)
