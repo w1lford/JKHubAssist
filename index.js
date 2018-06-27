@@ -72,7 +72,7 @@ function scrapeCategories() {
     }).catch( (reason) => {
       //console.log("Looks like we couldn't scrape the categories")
       console.log(reason);
-      reject(reason)
+    //  reject(reason)
     })
   })
 };
@@ -96,43 +96,34 @@ scrapeCategories().then( (data) => {
 });
 */
 
-function recurse(url) {
-  getResponse(url).then ( (res => {
-    const $ = cheerio.load(res.data);
-    const nextbutton = $('a[rel="next"]');
-    const url = nextbutton.attr('href')
-    if(nextbutton.html() !== null) {
-      console.log(url);
-      recurse(url);
-    }
-  }))
+var uri = 'https://jkhub.org/files/category/65-official-releases/'
+var uri2 = 'https://jkhub.org/files/category/67-skins/'
+var files = new Array();
+
+function scrapeModdata(url) {
+  return new Promise( (resolve, reject) => {
+      getResponse(url).then ( (res => {
+        const $ = cheerio.load(res.data);
+        $('div[class="basic_info"]').each(function(i, elem) {
+          var title = $(this).children('h3').children('a').text(); //mod title
+          var author = $(this).children('div[class="desc lighter"]').children('a').children('span').text(); //mod author
+          var desc = $(this).children('span[class="desc"]').text(); //description
+          var url = $(this).parent().children('a').attr('href'); // url
+          var thumb = $(this).parent().children('a').children('img').attr('src'); //image thumbnail url
+          files.push({name: title, author: author, description: desc, url: url, thumb: thumb});
+        })
+
+        const nextbutton = $('a[rel="next"]');
+        const url = nextbutton.attr('href')
+        if(nextbutton.html() !== null) {
+          console.log('Following link ' + url);
+          scrapeModdata(url).then ( dat => {resolve(dat)}); //recursively visit each file page via the 'next' button
+        } else { resolve(files); }
+      }))
+    })
 }
-getResponse('https://jkhub.org/files/category/67-skins/').then( (res) => {
-  console.log(res.status)
-  const $ = cheerio.load(res.data);
-  var files = new Array();
-  //find all div elements with the class "basic_info" (should give us everything we need)
-  $('div[class="basic_info"]').each(function(i, elem) {
-    var title = $(this).children('h3').children('a').text(); //mod title
-    var author = $(this).children('div[class="desc lighter"]').children('a').children('span').text(); //mod author
-    var desc = $(this).children('span[class="desc"]').text(); //description
-    var url = $(this).parent().children('a').attr('href'); // url
-    var thumb = $(this).parent().children('a').children('img').attr('src'); //image thumbnail url
-    files.push({name: title, author: author, description: desc, url: url, thumb: thumb});
-  })
-  //console.log(files);
 
-  const nextbutton = $('a[rel="next"]') //but wait! there's more...
-  const url = nextbutton.attr('href')
-  console.log(url);
-  recurse(url);
-
-  /*
-  var text = JSON.stringify(data, null, 4)
-  fs.writeFile("data.json", text)
-  win = new BrowserWindow({width: 800, height: 600})
-  win.loadFile('data.json')
-  */
+scrapeModdata(uri2).then( (dat) => {
+  console.log(dat);
 });
-
 //app.on('ready', createWindow)
