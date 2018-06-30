@@ -3,7 +3,6 @@ const https = require ('https')
 const cheerio = require ('cheerio')
 const fs = require('fs')
 
-var files = new Array();
 //Returns server response from JKHub.org given a path
 function getResponse(path) {
   const response = {};
@@ -75,11 +74,13 @@ function scrapeCategories() {
   })
 };
 
+//Scrapes data for a file page and recursively follows every "next" button on JKHub
+//Fires off a get request for each file page in a category
 function scrapeModdata(url) {
   return new Promise( (resolve, reject) => {
       getResponse(url).then ( (res => {
+        var files = new Array();
         const $ = cheerio.load(res.data);
-
         $('div[class="basic_info"]').each(function(i, elem) {
           var title = $(this).children('h3').children('a[title]').text(); //mod title
           var author = $(this).children('div[class="desc lighter"]').children('a').children('span').text(); //mod author
@@ -87,13 +88,20 @@ function scrapeModdata(url) {
           var url = $(this).parent().children('a').attr('href'); // url
           var thumb = $(this).parent().children('a').children('img').attr('src'); //image thumbnail url
           files.push({name: title, author: author, description: desc, url: url, thumb: thumb});
+          //console.log("Found: " + title)
         })
 
         const nextbutton = $('a[rel="next"]');
         const url = nextbutton.attr('href')
-        if(nextbutton.html() !== null) {
+        if(nextbutton.html() !== null) { //if there's a next button
           console.log('Following link ' + url);
-          scrapeModdata(url).then ( dat => {resolve(dat)}); //recursively visit each file page via the 'next' button
+          var filessaved = files;
+          scrapeModdata(url).then ( dat => {
+            dat.forEach( (item) => {
+              files.push(item); //don't push the array, but the contents of it.
+            })
+            resolve(files);
+          }); //recursively visit each file page via the 'next' button
         } else { resolve(files); } //not sure why I need this buuuuut
       }))
     })
@@ -118,11 +126,48 @@ scrapeCategories().then( (data) => {
 });
 */
 
-var uri = 'https://jkhub.org/files/category/78-halloween-2017/'
 
+var uri1 = 'https://jkhub.org/files/category/10-cosmetic-mods/';
+var uri2 = 'https://jkhub.org/files/category/30-single-player/';
+
+scrapeModdata(uri1).then( (dat) => {
+  console.log(dat);
+});
+
+//need to know how to make for loops wait for promises.
+/*
 scrapeCategories().then( (data) => {
   var metadata = data;
+  var promises = [];
+  for( i = 0; i < metadata.length; i++) {
+    var subcategory = metadata[i]["subcategory"];
+    for( j = 0; j < subcategory.length; j++ ) {
+      var name = subcategory[j].name;
+      var url = subcategory[j].url;
+      promises.push(scrapeModdata(url).then( () => {
+        console.log(files);
+        //console.log(name)
+        files = [];
+      }));
+    }
+  }
+  */
+/*
+  Promise.all(promises).then ( (values) => {
+    console.log(values);
+  })
+
+  var text = JSON.stringify(metadata, null, 4);
+  fs.writeFile("data.json", text)
+  console.log("Done.");
+
+})
+*/
+
+  /*
+  console.log("Scanning " + metadata[0]["subcategory"][0].name);
   scrapeModdata(uri).then( (dat) => {
+
     metadata[0]["subcategory"][1]["files"] = dat;
     //console.log(metadata[0]["subcategory"][0]);
     var text = JSON.stringify(metadata, null, 4);
@@ -131,6 +176,6 @@ scrapeCategories().then( (data) => {
   })
 
 })
-
+*/
 
 //app.on('ready', createWindow)
