@@ -40,7 +40,7 @@ function getResponse(path) {
 //Scrapes response and returns a javascript object
 //containing metadata about the file categories hosted on JKHUB.org (only sends 1 get request)
 function scrapeCategories() {
-  return new Promise( (resolve, reject) => { //lol wtf am I doing
+  return new Promise( (resolve, reject) => {
     getResponse('/files').then( (res) => {
       console.log('Connected with status code ' + res.status);
       console.log('Fetching categories...')
@@ -88,14 +88,13 @@ function scrapeModdata(url) {
           var url = $(this).parent().children('a').attr('href'); // url
           var thumb = $(this).parent().children('a').children('img').attr('src'); //image thumbnail url
           files.push({name: title, author: author, description: desc, url: url, thumb: thumb});
-          console.log("Found: " + title)
+          //console.log("Found: " + title)
         })
 
         const nextbutton = $('a[rel="next"]');
         const url = nextbutton.attr('href')
         if(nextbutton.html() !== null) { //if there's a next button
           console.log('Following link ' + url);
-          var filessaved = files;
           scrapeModdata(url).then ( dat => {
             dat.forEach( (item) => {
               files.push(item); //don't push the array, but the contents of it.
@@ -109,85 +108,32 @@ function scrapeModdata(url) {
 
 function createWindow () {
     // Create the browser window.
-    //win = new BrowserWindow({width: 800, height: 600})
+    win = new BrowserWindow({width: 800, height: 600})
     // and load the index.html of the app.
-    //win.loadFile('index.html')
+    win.loadFile('data.json')
 }
 
-scrapeCategories().then( (data) => {
-  var metadata = data;
-  //iterate through the object, and...
-  for( i = 0; i < metadata.length; i++) {
-    var subcategory = metadata[i]["subcategory"];
-    for( j = 0; j < subcategory.length; j++ ) {
-      scrapeModdata(subcategory[j].url).then( (dat) => {
-        console.log("Finished cat " + j);
-        console.log("Data: " + dat);
-        subcategory[j].files = dat;
+//iterate through the object, store file list in category list, and write to json file.
+function getFileList() {
+  return new Promise (( resolve, reject) => {
+    scrapeCategories().then( (data) => {
+      var metadata = data;
+      metadata.forEach( (cat, index, arr) => {
+          cat["subcategory"].forEach( (subcat, index) => {
+            scrapeModdata(subcat.url).then( (dat) => {
+              subcat.files = dat;
+              var text = JSON.stringify(metadata, null, 4);
+              fs.writeFile("data.json", text, ( err ) => {
+                if (err) {
+                  console.log(err);
+                }
+              })
+              console.log("Finished category " + subcat.name);
+            });
+          })
       })
-    }
-  }
-}).then( () => {
-  var text = JSON.stringify(metadata, null, 4);
-  fs.writeFile("data.json", text)
-  console.log("Done.");
-});
+    })
+  });
+}
 
-
-/*
-var uri1 = 'https://jkhub.org/files/category/1-utilities/';
-var uri2 = 'https://jkhub.org/files/category/30-single-player/';
-
-scrapeModdata(uri1).then( (dat) => {
-  console.log(dat);
-}).then (scrapeModdata (uri2).then ( (dat) =>{
-  console.log("Utils")
-  console.log(dat);
-}));
-*/
-
-//need to know how to make for loops wait for promises.
-/*
-scrapeCategories().then( (data) => {
-  var metadata = data;
-  var promises = [];
-  for( i = 0; i < metadata.length; i++) {
-    var subcategory = metadata[i]["subcategory"];
-    for( j = 0; j < subcategory.length; j++ ) {
-      var name = subcategory[j].name;
-      var url = subcategory[j].url;
-      promises.push(scrapeModdata(url).then( () => {
-        console.log(files);
-        //console.log(name)
-        files = [];
-      }));
-    }
-  }
-  */
-/*
-  Promise.all(promises).then ( (values) => {
-    console.log(values);
-  })
-
-  var text = JSON.stringify(metadata, null, 4);
-  fs.writeFile("data.json", text)
-  console.log("Done.");
-
-})
-*/
-
-  /*
-  console.log("Scanning " + metadata[0]["subcategory"][0].name);
-  scrapeModdata(uri).then( (dat) => {
-
-    metadata[0]["subcategory"][1]["files"] = dat;
-    //console.log(metadata[0]["subcategory"][0]);
-    var text = JSON.stringify(metadata, null, 4);
-    fs.writeFile("data.json", text)
-    console.log("Done.");
-  })
-
-})
-*/
-
-//app.on('ready', createWindow)
+app.on('ready', createWindow)
