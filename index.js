@@ -75,7 +75,7 @@ function scrapeCategories() {
 };
 
 //Scrapes data for a file page and recursively follows every "next" button on JKHub
-//Fires off a get request for each file page in a category
+//Fires off a get request for each file page in a category (could be a lot)
 function scrapeModdata(url) {
   return new Promise( (resolve, reject) => {
       getResponse(url).then ( (res => {
@@ -88,7 +88,7 @@ function scrapeModdata(url) {
           var url = $(this).parent().children('a').attr('href'); // url
           var thumb = $(this).parent().children('a').children('img').attr('src'); //image thumbnail url
           files.push({name: title, author: author, description: desc, url: url, thumb: thumb});
-          //console.log("Found: " + title)
+          console.log("Found: " + title)
         })
 
         const nextbutton = $('a[rel="next"]');
@@ -113,26 +113,38 @@ function createWindow () {
     // and load the index.html of the app.
     //win.loadFile('index.html')
 }
-/*
+
 scrapeCategories().then( (data) => {
   var metadata = data;
   //iterate through the object, and...
   for( i = 0; i < metadata.length; i++) {
     var subcategory = metadata[i]["subcategory"];
     for( j = 0; j < subcategory.length; j++ ) {
-      console.log(subcategory[j].path);
+      scrapeModdata(subcategory[j].url).then( (dat) => {
+        console.log("Finished cat " + j);
+        console.log("Data: " + dat);
+        subcategory[j].files = dat;
+      })
     }
   }
+}).then( () => {
+  var text = JSON.stringify(metadata, null, 4);
+  fs.writeFile("data.json", text)
+  console.log("Done.");
 });
-*/
 
 
-var uri1 = 'https://jkhub.org/files/category/10-cosmetic-mods/';
+/*
+var uri1 = 'https://jkhub.org/files/category/1-utilities/';
 var uri2 = 'https://jkhub.org/files/category/30-single-player/';
 
 scrapeModdata(uri1).then( (dat) => {
   console.log(dat);
-});
+}).then (scrapeModdata (uri2).then ( (dat) =>{
+  console.log("Utils")
+  console.log(dat);
+}));
+*/
 
 //need to know how to make for loops wait for promises.
 /*
