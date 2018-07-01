@@ -6,6 +6,9 @@ JKHubAssist is an Electron app for installing and updating mods from JKHub. Its 
 #### Status 
 - The basic API is done and now work has begun on the UI
 
+#### What it looks like (so far)
+![alt text](https://i.imgur.com/pWQVkzF.png)
+
 #### How to run this
 To get this to run on your box you must:
 1. Install Node.js
