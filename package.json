@@ -1,8 +1,7 @@
 {
-  "name": "electronapp",
+  "name": "JKHub-Assist",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "main": "Core.js",
   "scripts": {
     "start": "electron ."
   },
@@ -11,5 +10,14 @@
   "dependencies": {
     "cheerio": "^1.0.0-rc.2",
     "electron": "^2.0.2"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/w1lford/JKHubAssist.git"
+  },
+  "bugs": {
+    "url": "https://github.com/w1lford/JKHubAssist/issues"
+  },
+  "homepage": "https://github.com/w1lford/JKHubAssist#readme",
+  "description": ""
 }
