@@ -1,8 +1,19 @@
 body {
-  background-color: rgb(44,47,51);
+background-color: rgb(35,39,42);
 }
 
 #root {
-  color: rgb(255,255,255);
   font-family: "Arial",Times, serif;
+  color: rgb(255,255,255);
+}
+.sidebar {
+  width: 200px;
+  background-color: rgb(66,69,73);
+  float: left;
+  height: 600px; /*very bad, change this later*/
+  overflow-y: auto;
+}
+.content-pane {
+  float:left;
+  background-color: rgb(44,47,51);
 }
