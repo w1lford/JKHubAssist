@@ -2,24 +2,32 @@ const fs = require('fs');
 'use strict';
 const e = React.createElement;
 var file = fs.readFileSync("data.json",'utf8'); //read the json file
-var data = JSON.parse(file);
+var jsonData = JSON.parse(file);
 
-class LikeButton extends React.Component {
+class Subcategory extends React.Component {
+  render() {
+    return( e('li', null, this.props.title));
+  }
+}
+
+class CategoryHeader extends React.Component {
+  render() {
+    return( e('h4', {className: 'title'}, this.props.title));
+  }
+}
+
+class Category extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { liked: false };
   }
-
   render() {
-    if (this.state.liked) {
-      return 'You liked this.';
-    }
-
-    return e(
-      'button',
-      { onClick: () => this.setState({ liked: true }) },
-      'Like'
-    );
+    const subcategories = [];
+    subcategories.push(e(CategoryHeader, {title: this.props.categories.category}));
+    this.props.categories.subcategory.forEach( (category) => {
+      subcategories.push( e(Subcategory,{title: category.name}));
+    });
+    //return(e('div', {className: 'mod_category'}, e(CategoryHeader,{title: this.props.categories.category})));
+    return( e('ul', {className: 'mod_category'}, subcategories));
   }
 }
 
@@ -29,7 +37,11 @@ class Sidebar extends React.Component {
   }
 
   render() {
-    return e('h1',null, data[0].category, data[1].category);
+    const categories = [];
+    jsonData.forEach( (cat) => {
+      categories.push(e(Category, {categories: cat}));
+    });
+    return e('div', {className: 'sidebar'}, categories);
   }
 }
 
