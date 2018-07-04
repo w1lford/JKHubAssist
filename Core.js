@@ -113,7 +113,7 @@ function getFileList() {
       var metadata = data;
       metadata.forEach( (cat, index, arr) => {
           cat["subcategory"].forEach( (subcat, index) => {
-            scrapeModdata(subcat.url).then( (dat) => {
+            Promise.all(scrapeModdata(subcat.url).then( (dat) => {
               subcat.files = dat;
               var text = JSON.stringify(metadata, null, 4);
               fs.writeFile("data.json", text, ( err ) => {
@@ -121,8 +121,7 @@ function getFileList() {
                   console.log(err);
                 }
               })
-              console.log("Finished category " + subcat.name);
-            });
+            }));
           })
       })
     })
@@ -130,8 +129,10 @@ function getFileList() {
 }
 
 function createWindow () {
+    //getFileList();
     // Create the browser window.
     win = new BrowserWindow({width: 800, height: 600})
+    //win.setMenu(null); //hide the pointless dropdown menu
     // and load the index.html of the app.
     win.loadFile('index.html')
 }

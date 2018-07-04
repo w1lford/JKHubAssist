@@ -2,41 +2,18 @@
   <html>
     <head>
       <meta charset="UTF-8">
-      <title>Hello World!</title>
+      <title>JKHub Assist</title>
+      <link rel="stylesheet" type="text/css" href="styles.css" />
     </head>
     <body>
-      <ul id="categories"></ul>
-    <script>
-        dom_categories = document.getElementById("categories")
-        fs = require("fs")
-        fs.readFile(__dirname + "/data.json", "utf8", (err, data) => {
-            if (err)
-                throw err;
-            json_categories = JSON.parse(data);
-            for (var i in json_categories) {
-                json_category = json_categories[i];
-                li = document.createElement("li")
-                li.innerText = json_category.category
-                dom_categories.appendChild(li)
-                // each <li> has a <table>
-                li_table = document.createElement("table")
-                dom_categories.appendChild(li_table)
-                for (var j in json_category.subcategory) {
-                    var json_subcat = json_category.subcategory[j];
-                    tr = document.createElement("tr"); li_table.appendChild( tr )
-                    td = document.createElement("td"); td.innerText = json_subcat.name; tr.appendChild( td )
-                    td = document.createElement("td"); td.innerText = json_subcat.url;  tr.appendChild( td )
-                    td = document.createElement("td"); td.innerText = json_subcat.path; tr.appendChild( td )
-                }
-            }
-        });
-    </script>
 
-	  <!--React.js-->
-	  <script src="https://unpkg.com/react@16/umd/react.development.js" crossorigin></script>
-	  <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js" crossorigin></script>
+      <div id="root"></div>
+
+	    <!--React.js-->
+      <!-- Note: when deploying, replace "development.js" with "production.min.js". -->
+	    <script src="https://unpkg.com/react@16/umd/react.development.js" crossorigin></script>
+	    <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js" crossorigin></script>
       <!-- Load our React component. -->
-	  <script src="like_button.js"></script>
-
+	    <script src="App.js"></script>
     </body>
   </html>
