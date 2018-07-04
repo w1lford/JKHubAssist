@@ -4,9 +4,25 @@ const e = React.createElement;
 var file = fs.readFileSync("data.json",'utf8'); //read the json file
 var jsonData = JSON.parse(file);
 
+class SearchBar extends React.Component {
+  render() {
+    const searchBarInput =  e('input',{type: "text", id: "search-input", value: "Search..."});
+    return ( e('div', {className: 'search-bar'},searchBarInput));
+  }
+}
+
 class ContentPane extends React.Component {
   render() {
-    return ( e('div', {className: 'content-pane'}, 'Hello,world!'));
+    const components = [];
+    components.push(e(SearchBar));
+    components.push(e('p', null, 'Hello, world!'));
+    components.push(e('p', null, 'Hello, world!'));
+    components.push(e('p', null, 'Hello, world!'));
+    components.push(e('p', null, 'Hello, world!'));
+    components.push(e('p', null, 'Hello, world!'));
+    components.push(e('p', null, 'Hello, world!'));
+    components.push(e('p', null, 'Hello, world!'));
+    return ( e('div', {className: 'content-pane'}, components));
   }
 }
 

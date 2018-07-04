@@ -6,14 +6,25 @@ background-color: rgb(35,39,42);
   font-family: "Arial",Times, serif;
   color: rgb(255,255,255);
 }
+
+#search-input {
+   display: block;
+   margin-left: auto;
+   margin-right: auto;
+   width: 35%;
+}
+
+.search-bar {
+
+  padding-top: 25px;
+  padding-bottom: 25px;
+  background-color: rgb(44,47,51);
+}
+
 .sidebar {
   width: 200px;
   background-color: rgb(66,69,73);
   float: left;
-  height: 600px; /*very bad, change this later*/
+  height: auto;
   overflow-y: auto;
-}
-.content-pane {
-  float:left;
-  background-color: rgb(44,47,51);
 }
