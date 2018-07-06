@@ -7,11 +7,15 @@ var jsonData = JSON.parse(file);
 class ModEntry extends React.Component {
   render() {
     const components = [];
-    const image_link = 'https://jkhub.org/screenshots/monthly_06_2015/thumb-eb92bede19be9eae2ae7aa6c9f1557a1-screen02.jpg';
+    const image_link = 'https://jkhub.org/screenshots/monthly_02_2016/thumb-03f2e05839d166ae967c93c46b719bcb-91175_1.jpg';
     const image = e('img', {src: image_link, width: 120, height: 120});
-    //const title = e('div', {className: 'mod-entry-title'}, "Some Title");
+    const title = e('div', {className: 'mod-entry-title'}, "Some title");
+    const author = e('div', {className: 'mod-entry-author'}, "Author");
+    const install = e('button',{className: 'mod-entry-install'},"Install") //may have to become a react component.
     components.push(image);
-    //components.push(title);
+    components.push(title);
+    components.push(author);
+    components.push(install);
     return ( e('div', {className: 'mod-entry'}, components));
   }
 }
