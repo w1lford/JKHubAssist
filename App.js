@@ -7,10 +7,10 @@ var jsonData = JSON.parse(file);
 class ModEntry extends React.Component {
   render() {
     const components = [];
-    const image_link = 'https://jkhub.org/screenshots/monthly_02_2016/thumb-03f2e05839d166ae967c93c46b719bcb-91175_1.jpg';
+    const image_link = this.props.thumb;
     const image = e('img', {src: image_link, width: 120, height: 120});
-    const title = e('div', {className: 'mod-entry-title'}, "Some title");
-    const author = e('div', {className: 'mod-entry-author'}, "Author");
+    const title = e('div', {className: 'mod-entry-title'}, this.props.title);
+    const author = e('div', {className: 'mod-entry-author'}, this.props.author);
     const install = e('button',{className: 'mod-entry-install'},"Install") //may have to become a react component.
     components.push(image);
     components.push(title);
@@ -24,70 +24,11 @@ class ModContent extends React.Component {
   render() {
     const components = [];
 
-        components.push(e(ModEntry));
-        components.push(e(ModEntry));
-        components.push(e(ModEntry));
-        components.push(e(ModEntry));
-        components.push(e(ModEntry));
-        components.push(e(ModEntry));
-        components.push(e(ModEntry));
-        components.push(e(ModEntry));
-        components.push(e(ModEntry));
-        components.push(e(ModEntry));
-        components.push(e(ModEntry));
-        components.push(e(ModEntry));
-        components.push(e(ModEntry));
-        components.push(e(ModEntry));
-        components.push(e(ModEntry));
-        components.push(e(ModEntry));
-        components.push(e(ModEntry));
-        components.push(e(ModEntry));
-        components.push(e(ModEntry));
-        components.push(e(ModEntry));
-        components.push(e(ModEntry));
-        components.push(e(ModEntry));
-        components.push(e(ModEntry));
-        components.push(e(ModEntry));
-        components.push(e(ModEntry));
-        components.push(e(ModEntry));
-        components.push(e(ModEntry));
-        components.push(e(ModEntry));
-        components.push(e(ModEntry));
-        components.push(e(ModEntry));
-        components.push(e(ModEntry));
-        components.push(e(ModEntry));
-        components.push(e(ModEntry));
-        components.push(e(ModEntry));
-        components.push(e(ModEntry));
-        components.push(e(ModEntry));
-        components.push(e(ModEntry));
-        components.push(e(ModEntry));
-        components.push(e(ModEntry));
-        components.push(e(ModEntry));
-        components.push(e(ModEntry));
-        components.push(e(ModEntry));
-        components.push(e(ModEntry));
-        components.push(e(ModEntry));
-        components.push(e(ModEntry));
-        components.push(e(ModEntry));
-        components.push(e(ModEntry));
-        components.push(e(ModEntry));
-        components.push(e(ModEntry));
-        components.push(e(ModEntry));
-        components.push(e(ModEntry));
-        components.push(e(ModEntry));
-        components.push(e(ModEntry));
-        components.push(e(ModEntry));
-        components.push(e(ModEntry));
-        components.push(e(ModEntry));
-        components.push(e(ModEntry));
-        components.push(e(ModEntry));
-        components.push(e(ModEntry));
-        components.push(e(ModEntry));
-        components.push(e(ModEntry));
-        components.push(e(ModEntry));
-        components.push(e(ModEntry));
-        components.push(e(ModEntry));
+    //components.push(e(ModEntry, {title: "Poop", author: "Poopy", thumb: "https://jkhub.org/screenshots/monthly_10_2017/thumb-5bae4e29e800604ba8abb67b4cb7bb64-shot0379.jpg"}));
+    jsonData[0].subcategory[4].files.forEach( (file) => {
+      components.push(e(ModEntry, {title: file.name.substring(0,13) + "...", author: file.author, thumb: file.thumb}))
+    });
+
     return (e('div', {className: 'mod-content'}, components));
   }
 }

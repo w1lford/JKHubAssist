@@ -131,7 +131,7 @@ function getFileList() {
 function createWindow () {
     //getFileList();
     // Create the browser window.
-    win = new BrowserWindow({width: 800, height: 600})
+    win = new BrowserWindow({width: 900, height: 600})
     //win.setMenu(null); //hide the pointless dropdown menu
     // and load the index.html of the app.
     win.loadFile('index.html')
