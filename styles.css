@@ -1,4 +1,6 @@
+
 body {
+margin: 0;
 background-color: rgb(35,39,42);
 }
 
@@ -15,16 +17,34 @@ background-color: rgb(35,39,42);
 }
 
 .search-bar {
-
+  margin: 0;
   padding-top: 25px;
   padding-bottom: 25px;
   background-color: rgb(44,47,51);
 }
 
 .sidebar {
-  width: 200px;
+  width: 215px;
+  height: 100vh;
   background-color: rgb(66,69,73);
   float: left;
-  height: auto;
   overflow-y: auto;
+}
+
+.mod-content {
+  display: flex;
+  grid-template-columns: 1fr 1fr 1fr
+  height: 100%;
+  flex-wrap: wrap;
+  flex-direction: row;
+}
+
+.mod-entry {
+  padding-left: 35px;
+  padding-top: 35px;
+}
+
+.content-pane {
+  overflow-y: scroll;
+  height: 100vh;
 }

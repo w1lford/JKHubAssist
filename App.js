@@ -4,6 +4,90 @@ const e = React.createElement;
 var file = fs.readFileSync("data.json",'utf8'); //read the json file
 var jsonData = JSON.parse(file);
 
+class ModEntry extends React.Component {
+  render() {
+    const components = [];
+    const image_link = 'https://jkhub.org/screenshots/monthly_06_2015/thumb-eb92bede19be9eae2ae7aa6c9f1557a1-screen02.jpg';
+    const image = e('img', {src: image_link, width: 120, height: 120});
+    //const title = e('div', {className: 'mod-entry-title'}, "Some Title");
+    components.push(image);
+    //components.push(title);
+    return ( e('div', {className: 'mod-entry'}, components));
+  }
+}
+
+class ModContent extends React.Component {
+  render() {
+    const components = [];
+
+        components.push(e(ModEntry));
+        components.push(e(ModEntry));
+        components.push(e(ModEntry));
+        components.push(e(ModEntry));
+        components.push(e(ModEntry));
+        components.push(e(ModEntry));
+        components.push(e(ModEntry));
+        components.push(e(ModEntry));
+        components.push(e(ModEntry));
+        components.push(e(ModEntry));
+        components.push(e(ModEntry));
+        components.push(e(ModEntry));
+        components.push(e(ModEntry));
+        components.push(e(ModEntry));
+        components.push(e(ModEntry));
+        components.push(e(ModEntry));
+        components.push(e(ModEntry));
+        components.push(e(ModEntry));
+        components.push(e(ModEntry));
+        components.push(e(ModEntry));
+        components.push(e(ModEntry));
+        components.push(e(ModEntry));
+        components.push(e(ModEntry));
+        components.push(e(ModEntry));
+        components.push(e(ModEntry));
+        components.push(e(ModEntry));
+        components.push(e(ModEntry));
+        components.push(e(ModEntry));
+        components.push(e(ModEntry));
+        components.push(e(ModEntry));
+        components.push(e(ModEntry));
+        components.push(e(ModEntry));
+        components.push(e(ModEntry));
+        components.push(e(ModEntry));
+        components.push(e(ModEntry));
+        components.push(e(ModEntry));
+        components.push(e(ModEntry));
+        components.push(e(ModEntry));
+        components.push(e(ModEntry));
+        components.push(e(ModEntry));
+        components.push(e(ModEntry));
+        components.push(e(ModEntry));
+        components.push(e(ModEntry));
+        components.push(e(ModEntry));
+        components.push(e(ModEntry));
+        components.push(e(ModEntry));
+        components.push(e(ModEntry));
+        components.push(e(ModEntry));
+        components.push(e(ModEntry));
+        components.push(e(ModEntry));
+        components.push(e(ModEntry));
+        components.push(e(ModEntry));
+        components.push(e(ModEntry));
+        components.push(e(ModEntry));
+        components.push(e(ModEntry));
+        components.push(e(ModEntry));
+        components.push(e(ModEntry));
+        components.push(e(ModEntry));
+        components.push(e(ModEntry));
+        components.push(e(ModEntry));
+        components.push(e(ModEntry));
+        components.push(e(ModEntry));
+        components.push(e(ModEntry));
+        components.push(e(ModEntry));
+    return (e('div', {className: 'mod-content'}, components));
+  }
+}
+
 class SearchBar extends React.Component {
   render() {
     const searchBarInput =  e('input',{type: "text", id: "search-input", value: "Search..."});
@@ -15,13 +99,8 @@ class ContentPane extends React.Component {
   render() {
     const components = [];
     components.push(e(SearchBar));
-    components.push(e('p', null, 'Hello, world!'));
-    components.push(e('p', null, 'Hello, world!'));
-    components.push(e('p', null, 'Hello, world!'));
-    components.push(e('p', null, 'Hello, world!'));
-    components.push(e('p', null, 'Hello, world!'));
-    components.push(e('p', null, 'Hello, world!'));
-    components.push(e('p', null, 'Hello, world!'));
+    components.push(e(ModContent));
+
     return ( e('div', {className: 'content-pane'}, components));
   }
 }
