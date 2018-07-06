@@ -1,0 +1,6 @@
+Client sends request to the master server(s)
+Master sends back response packets that contain IPs of servers
+Client receives those lists, then queries every IP for a info to put the info in/check it's "real"
+cl_main and cl_lan have a lot of the underlying functions and such
+
+https://github.com/kungfooman/gameserver-tracker

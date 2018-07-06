@@ -1,7 +1,7 @@
 
 body {
-margin: 0;
-background-color: rgb(35,39,42);
+  margin: 0;
+  background-color: rgb(35,39,42);
 }
 
 #root {
@@ -48,10 +48,12 @@ background-color: rgb(35,39,42);
   padding-bottom: 2px;
   position: relative;
   text-align: center;
+  border: 0px solid #3a4145;
+  border-radius: 2px;
 }
 
 .mod-entry:hover {
-  background-color: grey;
+  background-color: #3a4145;
 }
 
 .mod-entry-author {
@@ -59,6 +61,7 @@ background-color: rgb(35,39,42);
   top: 8px;
   right: 16px;
   margin-top: 5px;
+  text-shadow: 2px 2px 5px black;
 }
 .mod-entry-install{
   position: absolute;

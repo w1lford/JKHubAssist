@@ -8,8 +8,8 @@ class ModEntry extends React.Component {
   render() {
     const components = [];
     const image_link = this.props.thumb;
-    const image = e('img', {src: image_link, width: 120, height: 120});
-    const title = e('div', {className: 'mod-entry-title'}, this.props.title);
+    const image = e('img', {src: image_link, title: this.props.title, width: 120, height: 120});
+    const title = e('div', {className: 'mod-entry-title'}, this.props.title.substring(0,13) + "...");
     const author = e('div', {className: 'mod-entry-author'}, this.props.author);
     const install = e('button',{className: 'mod-entry-install'},"Install") //may have to become a react component.
     components.push(image);
@@ -25,8 +25,8 @@ class ModContent extends React.Component {
     const components = [];
 
     //components.push(e(ModEntry, {title: "Poop", author: "Poopy", thumb: "https://jkhub.org/screenshots/monthly_10_2017/thumb-5bae4e29e800604ba8abb67b4cb7bb64-shot0379.jpg"}));
-    jsonData[0].subcategory[4].files.forEach( (file) => {
-      components.push(e(ModEntry, {title: file.name.substring(0,13) + "...", author: file.author, thumb: file.thumb}))
+    jsonData[1].subcategory[6].files.forEach( (file) => {
+      components.push(e(ModEntry, {title: file.name, author: file.author, thumb: file.thumb}))
     });
 
     return (e('div', {className: 'mod-content'}, components));
