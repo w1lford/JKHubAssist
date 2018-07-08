@@ -23,19 +23,18 @@ class ModEntry extends React.Component {
 class ModContent extends React.Component {
   render() {
     const components = [];
+    var modContent = this.props.fileState.files;
 
-    //components.push(e(ModEntry, {title: "Poop", author: "Poopy", thumb: "https://jkhub.org/screenshots/monthly_10_2017/thumb-5bae4e29e800604ba8abb67b4cb7bb64-shot0379.jpg"}));
-    jsonData[1].subcategory[6].files.forEach( (file) => {
+    modContent.forEach( (file) => {
       components.push(e(ModEntry, {title: file.name, author: file.author, thumb: file.thumb}))
     });
-
     return (e('div', {className: 'mod-content'}, components));
   }
 }
 
 class SearchBar extends React.Component {
   render() {
-    const searchBarInput =  e('input',{type: "text", id: "search-input", value: "Search..."});
+    const searchBarInput =  e('input',{type: "text", id: "search-input", placeholder: "Search..."});
     return ( e('div', {className: 'search-bar'},searchBarInput));
   }
 }
@@ -44,21 +43,34 @@ class ContentPane extends React.Component {
   render() {
     const components = [];
     components.push(e(SearchBar));
-    components.push(e(ModContent));
-
-    return ( e('div', {className: 'content-pane'}, components));
+    components.push(e(ModContent, {fileState: this.props.fileState}));
+    return ( e('div', {className: 'content-pane', fileState: this.props.fileState}, components));
   }
 }
 
 class SubCategoryButton extends React.Component {
+  constructor(props) {
+    super(props);
+    this.handleClick = this.handleClick.bind(this);
+    this.handleButtonClick = this.handleButtonClick.bind(this);
+  }
+
+  handleButtonClick(files) {
+    this.props.handleButtonClick(files);
+  }
+
+  handleClick() {
+    this.handleButtonClick(this.props.subCategory.files);
+  }
+
   render() {
-    return( e('button',null,this.props.title));
+    return( e('button',{onClick: this.handleClick},this.props.subCategory.name));
   }
 }
 
 class Subcategory extends React.Component {
   render() {
-    return( e('li', null, e(SubCategoryButton, {title: this.props.title})));
+    return( e('li', null, e(SubCategoryButton, {subCategory: this.props.subCategory, handleButtonClick: this.props.handleButtonClick})));
   }
 }
 
@@ -72,32 +84,39 @@ class Category extends React.Component {
   render() {
     const subcategories = [];
     subcategories.push(e(CategoryHeader, {title: this.props.categories.category}));
-    this.props.categories.subcategory.forEach( (category) => {
-      subcategories.push( e(Subcategory,{title: category.name}));
+    this.props.categories.subcategory.forEach( (subcat) => {
+      subcategories.push( e(Subcategory,{subCategory: subcat, handleButtonClick: this.props.handleButtonClick}));
     });
     return( e('ul', {className: 'mod_category'}, subcategories));
   }
 }
 
 class Sidebar extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-
   render() {
     const categories = [];
     jsonData.forEach( (cat) => {
-      categories.push(e(Category, {categories: cat}));
+      categories.push(e(Category, {categories: cat, handleButtonClick: this.props.handleButtonClick}));
     });
     return e('div', {className: 'sidebar'}, categories);
   }
 }
 
 class App extends React.Component {
+
+  constructor(props) {
+    super(props);
+    this.state = {files: jsonData[0].subcategory[7].files};
+    this.handleButtonClick = this.handleButtonClick.bind(this);
+  }
+
+  handleButtonClick(files) {
+    this.setState({files: files}); //change the state so the new file list is shown in the UI.
+  }
+
   render() {
     const components = [];
-    components.push(e(Sidebar));
-    components.push(e(ContentPane));
+    components.push(e(Sidebar, {handleButtonClick: this.handleButtonClick}));
+    components.push(e(ContentPane, {fileState: this.state}));
     return e('div', {id: 'app'}, components);
   }
 }
