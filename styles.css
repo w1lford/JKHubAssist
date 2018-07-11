@@ -100,6 +100,7 @@ ul {
   text-align: center;
   border: 0px solid #3a4145;
   border-radius: 2px;
+  height: 140px;
 }
 
 .mod-entry:hover {
