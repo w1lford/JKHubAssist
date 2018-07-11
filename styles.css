@@ -1,7 +1,7 @@
 
 body {
   margin: 0;
-  background-color: rgb(35,39,42);
+  background-color: #36393F;
 }
 
 #root {
@@ -12,23 +12,64 @@ body {
 #search-input {
    display: block;
    margin-left: auto;
+   color: white;
    margin-right: auto;
-   width: 35%;
+   width: 45%;
+   height: 45px;
+   border:2px solid white;
+ 	 border-radius:10px;
+   font-size: 25px;
+   border: none;
+   outline: 0;
+   background: none;
+   -webkit-appearance: none;
+}
+
+ul {
+  list-style-type:none;
 }
 
 .search-bar {
   margin: 0;
-  padding-top: 25px;
-  padding-bottom: 25px;
-  background-color: rgb(44,47,51);
+  padding-top: 10px;
+  padding-bottom: 10px;
+  background-color: #2F3136;
 }
 
 .sidebar {
   width: 215px;
   height: 100vh;
-  background-color: rgb(66,69,73);
+  background-color: #313237;
   float: left;
+  align: center;
   overflow-y: auto;
+  overflow-x: hidden;
+  display:inline;
+}
+
+.sidebar button {
+  background: none;
+  color: white;
+  border: none;
+  text-decoration: none;
+  height: 25px;
+  outline: 0;
+}
+
+.sidebar button:hover {
+  background: #515b5b;
+
+}
+
+.sidebar::-webkit-scrollbar {
+  width: 5px;
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+  background: #212224;
+}
+.sidebar::-webkit-scrollbar-track {
+  background: #303136;
 }
 
 .mod-content {
@@ -38,6 +79,15 @@ body {
   flex-direction: row;
 }
 
+.mod_category {
+  margin: 0;
+  width: 100%;
+}
+
+.title {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
 
 .mod-entry {
   margin-left: 20px;
@@ -73,4 +123,8 @@ body {
 .content-pane {
   overflow-y: scroll;
   height: 100vh;
+}
+
+.content-pane::-webkit-scrollbar {
+    display: none;
 }
